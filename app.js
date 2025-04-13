@@ -47,7 +47,8 @@ app.use((err, req, res, next) => {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-    // Renderizar a página de erro ou enviar resposta JSON com base no cabeçalho Accept
+    // Renderizar a página de erro ou enviar resposta JSON
+    // com base no cabeçalho Accept
     res.status(err.status || 500);
     if (req.accepts('html')) {
         res.render('error');

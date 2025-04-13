@@ -48,8 +48,8 @@ const createCliente = async (cliente) => {
                 nome: cliente.nome,
                 sobrenome: cliente.sobrenome,
                 email: cliente.email,
-                idade: cliente.idade
-            }
+                idade: cliente.idade,
+            },
         ])
         .select();
 
@@ -71,7 +71,7 @@ const updateCliente = async (id, cliente) => {
             nome: cliente.nome,
             sobrenome: cliente.sobrenome,
             email: cliente.email,
-            idade: cliente.idade
+            idade: cliente.idade,
         })
         .eq('id', id)
         .select();

@@ -13,7 +13,9 @@ const getSupabaseClient = () => {
     const supabaseKey = process.env.SUPABASE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-        throw new Error('URL e chave do Supabase devem ser fornecidas no arquivo .env');
+        throw new Error(
+            'URL e chave do Supabase devem ser fornecidas no arquivo .env',
+        );
     }
 
     return createClient(supabaseUrl, supabaseKey);

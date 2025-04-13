@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
     if (req.accepts('html')) {
         res.render('index', {
-            title: 'Desafio Node.js API'
+            title: 'Desafio Node.js API',
         });
     } else {
         res.status(200).json({

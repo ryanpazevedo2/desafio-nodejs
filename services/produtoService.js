@@ -47,8 +47,8 @@ const createProduto = async (produto) => {
             {
                 nome: produto.nome,
                 descricao: produto.descricao,
-                preco: produto.preco
-            }
+                preco: produto.preco,
+            },
         ])
         .select();
 
@@ -69,7 +69,7 @@ const updateProduto = async (id, produto) => {
         .update({
             nome: produto.nome,
             descricao: produto.descricao,
-            preco: produto.preco
+            preco: produto.preco,
         })
         .eq('id', id)
         .select();

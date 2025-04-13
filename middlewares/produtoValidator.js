@@ -53,7 +53,7 @@ const validateProdutoId = (req, res, next) => {
 
     if (!id || isNaN(id) || parseInt(id) <= 0) {
         return res.status(400).json({
-            message: 'ID inválido. Deve ser um número positivo'
+            message: 'ID inválido. Deve ser um número positivo',
         });
     }
 
