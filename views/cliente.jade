@@ -1,0 +1,54 @@
+extends layout
+
+block content
+  h1 Detalhes do Cliente
+
+  if cliente
+    table
+      tr
+        th ID
+        td= cliente.id
+      tr
+        th Nome
+        td= cliente.nome
+      tr
+        th Sobrenome
+        td= cliente.sobrenome
+      tr
+        th Email
+        td= cliente.email
+      tr
+        th Idade
+        td= cliente.idade
+
+    h2 Ações
+    div
+      a(href='/clientes') Voltar para Lista
+
+    h2 Atualizar Cliente
+    form(action='/clientes/' + cliente.id + '/update', method='POST')
+      div
+        label(for='nome') Nome:
+        input(type='text', name='nome', value=cliente.nome, required)
+
+      div
+        label(for='sobrenome') Sobrenome:
+        input(type='text', name='sobrenome', value=cliente.sobrenome, required)
+
+      div
+        label(for='email') Email:
+        input(type='email', name='email', value=cliente.email, required)
+
+      div
+        label(for='idade') Idade:
+        input(type='number', name='idade', value=cliente.idade, required, min='0')
+
+      div
+        button(type='submit') Atualizar Cliente
+
+    h2 Excluir Cliente
+    form(action='/clientes/' + cliente.id + '/delete', method='POST', onsubmit='return confirm("Tem certeza que deseja excluir este cliente?")')
+      button(type='submit') Excluir Cliente
+  else
+    p Cliente não encontrado.
+    a(href='/clientes') Voltar para Lista

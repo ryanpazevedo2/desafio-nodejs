@@ -1,0 +1,49 @@
+extends layout
+
+block content
+  h1 Desafio Node.js API
+  p Bem-vindo à API REST desenvolvida com Node.js e Supabase.
+  
+  h2 Endpoints Disponíveis
+  
+  h3 Raiz
+  ul
+    li
+      code GET /
+      span  - Retorna uma mensagem de boas-vindas
+  
+  h3 Clientes
+  ul
+    li
+      code GET /clientes
+      span  - Lista todos os clientes
+    li
+      code GET /clientes/:id
+      span  - Retorna um cliente específico
+    li
+      code POST /clientes
+      span  - Cria um novo cliente
+    li
+      code PUT /clientes/:id
+      span  - Atualiza um cliente existente
+    li
+      code DELETE /clientes/:id
+      span  - Remove um cliente
+  
+  h3 Produtos
+  ul
+    li
+      code GET /produtos
+      span  - Lista todos os produtos
+    li
+      code GET /produtos/:id
+      span  - Retorna um produto específico
+    li
+      code POST /produtos
+      span  - Cria um novo produto
+    li
+      code PUT /produtos/:id
+      span  - Atualiza um produto existente
+    li
+      code DELETE /produtos/:id
+      span  - Remove um produto

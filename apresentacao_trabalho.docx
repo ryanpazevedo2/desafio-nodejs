@@ -1,0 +1,150 @@
+# Apresentação do Trabalho: API REST com Node.js e Supabase
+
+## Integrantes
+- Ryan Azevedo
+- Marcos
+
+## Descrição do Projeto
+Este trabalho consiste em uma API REST desenvolvida com Node.js e Supabase como banco de dados. A aplicação permite o gerenciamento de clientes e produtos através de operações CRUD (Create, Read, Update, Delete) com uma interface web simples utilizando o template engine Jade.
+
+## Tecnologias Utilizadas
+- **Node.js**: Plataforma de execução JavaScript server-side
+- **Express**: Framework web para Node.js
+- **Supabase**: Plataforma de banco de dados PostgreSQL como serviço
+- **Jade**: Template engine para renderização de HTML
+- **ESLint**: Ferramenta de análise estática para identificar padrões problemáticos no código
+- **Method-Override**: Middleware para permitir métodos HTTP PUT e DELETE em formulários
+- **Git**: Sistema de controle de versão
+
+## Estrutura do Projeto
+```
+├── configs/         # Arquivos de configuração
+├── controllers/     # Arquivos que tratam da lógica de negócios
+├── middlewares/     # Validações de campos das requisições
+├── models/          # Arquivos SQL para criação de banco de dados
+├── routes/          # APIs e endpoints
+├── services/        # Chamadas ao banco de dados
+├── views/           # Camada de apresentação
+├── .env             # Variáveis de ambiente
+├── .eslintrc.json   # Configuração do ESLint
+├── .gitignore       # Arquivos ignorados pelo Git
+├── app.js           # Arquivo principal da aplicação
+└── package.json     # Dependências e scripts
+```
+
+## Endpoints da API
+
+### Raiz
+- `GET /` - Retorna uma mensagem de boas-vindas
+
+### Clientes
+- `GET /clientes` - Lista todos os clientes
+- `GET /clientes/:id` - Retorna um cliente específico
+- `POST /clientes` - Cria um novo cliente
+- `PUT /clientes/:id` - Atualiza um cliente existente
+- `DELETE /clientes/:id` - Remove um cliente
+- `POST /clientes/:id/update` - Rota alternativa para atualizar cliente
+- `POST /clientes/:id/delete` - Rota alternativa para excluir cliente
+
+### Produtos
+- `GET /produtos` - Lista todos os produtos
+- `GET /produtos/:id` - Retorna um produto específico
+- `POST /produtos` - Cria um novo produto
+- `PUT /produtos/:id` - Atualiza um produto existente
+- `DELETE /produtos/:id` - Remove um produto
+- `POST /produtos/:id/update` - Rota alternativa para atualizar produto
+- `POST /produtos/:id/delete` - Rota alternativa para excluir produto
+
+## Banco de Dados
+O projeto utiliza o Supabase como serviço de banco de dados PostgreSQL. Foram criadas duas tabelas principais:
+
+### Tabela de Clientes
+```sql
+CREATE TABLE IF NOT EXISTS public.clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    idade INT NOT NULL
+);
+```
+
+### Tabela de Produtos
+```sql
+CREATE TABLE IF NOT EXISTS public.produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao VARCHAR(255) NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL,
+    data_atualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Funcionalidades Implementadas
+
+### 1. Gerenciamento de Clientes
+- Listagem de todos os clientes
+- Visualização de detalhes de um cliente específico
+- Criação de novos clientes
+- Atualização de dados de clientes existentes
+- Exclusão de clientes
+
+### 2. Gerenciamento de Produtos
+- Listagem de todos os produtos
+- Visualização de detalhes de um produto específico
+- Criação de novos produtos
+- Atualização de dados de produtos existentes
+- Exclusão de produtos
+
+### 3. Interface Web
+- Páginas HTML renderizadas com Jade
+- Formulários para interação com a API
+- Estilização básica para melhor experiência do usuário
+
+### 4. Validação de Dados
+- Middlewares para validação de dados de entrada
+- Tratamento de erros e respostas apropriadas
+
+### 5. Configuração de Lint
+- Regras de estilo de código definidas no ESLint
+- Verificação automática de padrões de código
+
+## Desafios Enfrentados e Soluções
+
+### Migração de MySQL para Supabase
+Inicialmente, o projeto foi desenvolvido utilizando MySQL como banco de dados. Durante o desenvolvimento, decidimos migrar para o Supabase para aproveitar suas funcionalidades modernas e facilidade de uso. A migração envolveu:
+- Reescrita dos serviços de acesso ao banco de dados
+- Adaptação das consultas SQL para o formato do Supabase
+- Configuração do ambiente com as novas variáveis
+
+### Implementação de Métodos HTTP em Formulários
+Os navegadores suportam nativamente apenas os métodos GET e POST em formulários HTML. Para implementar os métodos PUT e DELETE, utilizamos duas abordagens:
+1. Middleware Method-Override para interpretar campos ocultos nos formulários
+2. Rotas alternativas usando POST para operações de atualização e exclusão
+
+### Correção de Erros de Lint
+O projeto foi configurado com regras de estilo de código usando ESLint. Enfrentamos desafios com:
+- Quebras de linha (linebreak-style) entre sistemas operacionais diferentes
+- Comprimento máximo de linhas
+- Vírgulas finais (trailing commas)
+
+Estas questões foram resolvidas através de:
+- Configuração específica no arquivo .eslintrc.json
+- Correção manual e automática dos problemas identificados
+
+## Conclusão
+O desenvolvimento deste projeto permitiu a aplicação prática de conceitos importantes de desenvolvimento web com Node.js, incluindo:
+- Arquitetura MVC (Model-View-Controller)
+- Operações CRUD em APIs REST
+- Integração com serviços de banco de dados modernos
+- Validação e tratamento de dados
+- Boas práticas de desenvolvimento com ferramentas de lint
+
+A aplicação resultante é um sistema funcional de gerenciamento de clientes e produtos, com uma interface web simples e uma API robusta que pode ser consumida por diferentes tipos de clientes.
+
+## Instruções para Execução
+1. Clone o repositório: `git clone https://github.com/ryanpazevedo2/desafio-nodejs.git`
+2. Instale as dependências: `npm install`
+3. Configure as variáveis de ambiente no arquivo `.env`
+4. Execute a aplicação: `npm run dev`
+5. Acesse a aplicação em: `http://localhost:3000`

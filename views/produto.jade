@@ -1,0 +1,50 @@
+extends layout
+
+block content
+  h1 Detalhes do Produto
+
+  if produto
+    table
+      tr
+        th ID
+        td= produto.id
+      tr
+        th Nome
+        td= produto.nome
+      tr
+        th Descrição
+        td= produto.descricao
+      tr
+        th Preço
+        td= 'R$ ' + produto.preco.toFixed(2)
+      tr
+        th Data Atualização
+        td= new Date(produto.data_atualizado).toLocaleString()
+
+    h2 Ações
+    div
+      a(href='/produtos') Voltar para Lista
+
+    h2 Atualizar Produto
+    form(action='/produtos/' + produto.id + '/update', method='POST')
+      div
+        label(for='nome') Nome:
+        input(type='text', name='nome', value=produto.nome, required)
+
+      div
+        label(for='descricao') Descrição:
+        textarea(name='descricao', required)= produto.descricao
+
+      div
+        label(for='preco') Preço:
+        input(type='number', name='preco', step='0.01', min='0', value=produto.preco, required)
+
+      div
+        button(type='submit') Atualizar Produto
+
+    h2 Excluir Produto
+    form(action='/produtos/' + produto.id + '/delete', method='POST', onsubmit='return confirm("Tem certeza que deseja excluir este produto?")')
+      button(type='submit') Excluir Produto
+  else
+    p Produto não encontrado.
+    a(href='/produtos') Voltar para Lista

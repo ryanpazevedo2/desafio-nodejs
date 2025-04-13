@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  h1 Produtos
+  
+  if produtos && produtos.length > 0
+    table
+      thead
+        tr
+          th ID
+          th Nome
+          th Descrição
+          th Preço
+          th Data Atualização
+          th Ações
+      tbody
+        each produto in produtos
+          tr
+            td= produto.id
+            td= produto.nome
+            td= produto.descricao
+            td= 'R$ ' + produto.preco.toFixed(2)
+            td= new Date(produto.data_atualizado).toLocaleString()
+            td
+              a(href='/produtos/' + produto.id) Visualizar
+  else
+    p Nenhum produto encontrado.
+  
+  h2 Adicionar Novo Produto
+  form(action='/produtos', method='POST')
+    div
+      label(for='nome') Nome:
+      input(type='text', name='nome', required)
+    
+    div
+      label(for='descricao') Descrição:
+      textarea(name='descricao', required)
+    
+    div
+      label(for='preco') Preço:
+      input(type='number', name='preco', step='0.01', min='0', required)
+    
+    div
+      button(type='submit') Adicionar Produto
