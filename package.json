@@ -14,6 +14,7 @@
   "type": "commonjs",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
+    "chalk": "^4.1.2",
     "cookie-parser": "^1.4.7",
     "debug": "^4.4.0",
     "dotenv": "^16.5.0",
@@ -21,7 +22,9 @@
     "http-errors": "^2.0.0",
     "jade": "^1.11.0",
     "method-override": "^3.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "eslint": "^9.24.0",

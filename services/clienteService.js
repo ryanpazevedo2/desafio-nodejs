@@ -2,18 +2,38 @@
  * Serviço de Cliente - Operações de banco de dados para clientes
  */
 const { getSupabaseClient } = require('../configs/database');
+const cacheUtil = require('../utils/cache');
+const logger = require('../utils/logger');
 
 /**
  * Obter todos os clientes
+ * @param {boolean} useCache - Se deve usar cache (padrão: true)
  * @return {Promise<Array>} Lista de clientes
  */
-const getAllClientes = async () => {
+const getAllClientes = async (useCache = true) => {
+    // Verificar se os dados estão em cache
+    if (useCache) {
+        const cachedData = cacheUtil.get(cacheUtil.CACHE_KEYS.ALL_CLIENTES);
+        if (cachedData) {
+            logger.logCache('Listando clientes do cache');
+            return cachedData;
+        }
+    }
+
+    // Se não estiver em cache ou se o cache não for usado, buscar do banco
     const supabase = getSupabaseClient();
     const { data, error } = await supabase
         .from('clientes')
         .select('*');
 
     if (error) throw error;
+    
+    // Armazenar no cache (por 30 segundos por padrão)
+    if (useCache) {
+        cacheUtil.set(cacheUtil.CACHE_KEYS.ALL_CLIENTES, data);
+    }
+    
+    logger.logDB('Listando clientes do banco de dados');
     return data;
 };
 
@@ -31,6 +51,7 @@ const getClienteById = async (id) => {
         .single();
 
     if (error) throw error;
+    logger.logDB(`Buscando cliente ID ${id} do banco de dados`);
     return data;
 };
 
@@ -54,6 +75,11 @@ const createCliente = async (cliente) => {
         .select();
 
     if (error) throw error;
+    
+    // Invalidar cache após criação
+    invalidateCache();
+    
+    logger.logDB(`Cliente criado: ${cliente.nome} ${cliente.sobrenome}`);
     return data[0];
 };
 
@@ -77,6 +103,11 @@ const updateCliente = async (id, cliente) => {
         .select();
 
     if (error) throw error;
+    
+    // Invalidar cache após atualização
+    invalidateCache();
+    
+    logger.logDB(`Cliente atualizado: ID ${id}`);
     return data[0];
 };
 
@@ -93,7 +124,20 @@ const deleteCliente = async (id) => {
         .eq('id', id);
 
     if (error) throw error;
+    
+    // Invalidar cache após exclusão
+    invalidateCache();
+    
+    logger.logDB(`Cliente excluído: ID ${id}`);
     return { id };
+};
+
+/**
+ * Invalidar o cache de clientes
+ */
+const invalidateCache = () => {
+    cacheUtil.del(cacheUtil.CACHE_KEYS.ALL_CLIENTES);
+    logger.logInfo('Cache de clientes invalidado');
 };
 
 module.exports = {

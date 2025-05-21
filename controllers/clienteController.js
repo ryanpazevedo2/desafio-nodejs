@@ -2,6 +2,7 @@
  * Controle de clientes
  */
 const clienteService = require('../services/clienteService');
+const logger = require('../utils/logger');
 
 /**
  * Pegar todos os clientes
@@ -11,6 +12,7 @@ const clienteService = require('../services/clienteService');
  */
 const getAllClientes = async (req, res) => {
     try {
+        // Obter do serviço com suporte a cache
         const clientes = await clienteService.getAllClientes();
 
         if (req.accepts('html')) {
@@ -22,7 +24,7 @@ const getAllClientes = async (req, res) => {
             res.status(200).json(clientes);
         }
     } catch (error) {
-        console.error('Erro ao buscar clientes:', error);
+        logger.logError('Erro ao buscar clientes', error);
         if (req.accepts('html')) {
             res.render('error', {
                 message: 'Erro ao buscar clientes',
@@ -46,6 +48,7 @@ const getClienteById = async (req, res) => {
         const cliente = await clienteService.getClienteById(id);
 
         if (!cliente) {
+            logger.logInfo(`Cliente ID ${id} não encontrado`);
             if (req.accepts('html')) {
                 return res.render('error', {
                     message: 'Cliente não encontrado',
@@ -67,7 +70,7 @@ const getClienteById = async (req, res) => {
             res.status(200).json(cliente);
         }
     } catch (error) {
-        console.error('Erro ao buscar cliente:', error);
+        logger.logError(`Erro ao buscar cliente ID ${req.params.id}`, error);
         if (req.accepts('html')) {
             res.render('error', {
                 message: 'Erro ao buscar cliente',
@@ -102,7 +105,7 @@ const createCliente = async (req, res) => {
             res.status(201).json(newCliente);
         }
     } catch (error) {
-        console.error('Erro ao criar cliente:', error);
+        logger.logError('Erro ao criar cliente', error);
         if (req.accepts('html')) {
             res.render('error', {
                 message: 'Erro ao criar cliente',
@@ -128,6 +131,7 @@ const updateCliente = async (req, res) => {
         // Verificar se o cliente existe
         const existingCliente = await clienteService.getClienteById(id);
         if (!existingCliente) {
+            logger.logInfo(`Tentativa de atualizar cliente inexistente ID ${id}`);
             if (req.accepts('html')) {
                 return res.render('error', {
                     message: 'Cliente não encontrado',
@@ -154,7 +158,7 @@ const updateCliente = async (req, res) => {
             res.status(200).json(updatedCliente);
         }
     } catch (error) {
-        console.error('Erro ao atualizar cliente:', error);
+        logger.logError(`Erro ao atualizar cliente ID ${req.params.id}`, error);
         if (req.accepts('html')) {
             res.render('error', {
                 message: 'Erro ao atualizar cliente',
@@ -179,6 +183,7 @@ const deleteCliente = async (req, res) => {
         // Verificar se o cliente existe
         const existingCliente = await clienteService.getClienteById(id);
         if (!existingCliente) {
+            logger.logInfo(`Tentativa de excluir cliente inexistente ID ${id}`);
             if (req.accepts('html')) {
                 return res.render('error', {
                     message: 'Cliente não encontrado',
@@ -199,7 +204,7 @@ const deleteCliente = async (req, res) => {
             res.status(200).json({ message: 'Cliente removido com sucesso' });
         }
     } catch (error) {
-        console.error('Erro ao deletar cliente:', error);
+        logger.logError(`Erro ao deletar cliente ID ${req.params.id}`, error);
         if (req.accepts('html')) {
             res.render('error', {
                 message: 'Erro ao remover cliente',
