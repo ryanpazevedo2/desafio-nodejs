@@ -27,7 +27,37 @@ const validateCliente = [
         .normalizeEmail(),
 
     body('idade')
-        .isInt({ min: 1, max: 120 }).withMessage('Idade deve ser um número entre 1 e 120.'),
+        .isInt({ min: 1, max: 119 }).withMessage('Idade deve ser um número maior que 0 e menor que 120.'),
+
+    body('data_atualizado')
+        .optional({ checkFalsy: true })
+        .custom((value) => {
+            // Validar formato DD/MM/AAAA
+            const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            const match = value.match(dateRegex);
+            
+            if (!match) {
+                throw new Error('Data deve estar no formato DD/MM/AAAA.');
+            }
+            
+            const [, day, month, year] = match;
+            const date = new Date(year, month - 1, day);
+            
+            // Verificar se a data é válida
+            if (date.getDate() != day || date.getMonth() != month - 1 || date.getFullYear() != year) {
+                throw new Error('Data inválida.');
+            }
+            
+            // Verificar se está entre 01/01/2000 e 20/06/2025
+            const minDate = new Date(2000, 0, 1); // 01/01/2000
+            const maxDate = new Date(2025, 5, 20); // 20/06/2025
+            
+            if (date < minDate || date > maxDate) {
+                throw new Error('Data deve estar entre 01/01/2000 e 20/06/2025.');
+            }
+            
+            return true;
+        }),
 
     (req, res, next) => {
         const errors = validationResult(req);

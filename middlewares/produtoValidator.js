@@ -27,9 +27,33 @@ const validateProduto = [
 
     body('data_atualizado')
         .optional({ checkFalsy: true })
-        .isISO8601().withMessage('Data deve estar no formato ISO8601.')
-        .isAfter('2000-01-01T00:00:00.000Z').withMessage('A data deve ser posterior a 01/01/2000.')
-        .isBefore('2025-06-20T00:00:00.000Z').withMessage('A data deve ser anterior a 20/06/2025.'),
+        .custom((value) => {
+            // Validar formato DD/MM/AAAA
+            const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            const match = value.match(dateRegex);
+            
+            if (!match) {
+                throw new Error('Data deve estar no formato DD/MM/AAAA.');
+            }
+            
+            const [, day, month, year] = match;
+            const date = new Date(year, month - 1, day);
+            
+            // Verificar se a data é válida
+            if (date.getDate() != day || date.getMonth() != month - 1 || date.getFullYear() != year) {
+                throw new Error('Data inválida.');
+            }
+            
+            // Verificar se está entre 01/01/2000 e 20/06/2025
+            const minDate = new Date(2000, 0, 1); // 01/01/2000
+            const maxDate = new Date(2025, 5, 20); // 20/06/2025
+            
+            if (date < minDate || date > maxDate) {
+                throw new Error('Data deve estar entre 01/01/2000 e 20/06/2025.');
+            }
+            
+            return true;
+        }),
 
     (req, res, next) => {
         const errors = validationResult(req);
