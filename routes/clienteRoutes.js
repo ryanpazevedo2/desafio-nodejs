@@ -8,6 +8,10 @@ const {
     validateCliente,
     validateClienteId,
 } = require('../middlewares/clienteValidator');
+const { authenticateToken } = require('../middlewares/authMiddleware');
+
+// Aplicar autenticação a todas as rotas de /clientes
+router.use(authenticateToken);
 
 // GET /clientes - Obter todos os clientes
 router.get('/', clienteController.getAllClientes);

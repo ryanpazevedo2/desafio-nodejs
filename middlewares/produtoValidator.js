@@ -2,6 +2,8 @@
  * Middleware de validação de produto
  */
 
+const { body, param, validationResult } = require('express-validator');
+
 /**
  * Validar dados do produto
  * @param {Object} req - Objeto de requisição Express
@@ -9,37 +11,34 @@
  * @param {Function} next - Função middleware next do Express
  * @return {void}
  */
-const validateProduto = (req, res, next) => {
-    const { nome, descricao, preco } = req.body;
-    const errors = [];
+const validateProduto = [
+    body('nome')
+        .isString().withMessage('Nome do produto deve ser um texto.')
+        .trim()
+        .isLength({ min: 3, max: 255 }).withMessage('Nome do produto deve ter entre 3 e 255 caracteres.'),
 
-    // Validar nome
-    if (!nome || nome.trim() === '') {
-        errors.push('Nome é obrigatório');
-    }
+    body('descricao')
+        .isString().withMessage('Descrição deve ser um texto.')
+        .trim()
+        .isLength({ min: 3, max: 255 }).withMessage('Descrição deve ter entre 3 e 255 caracteres.'),
 
-    // Validar descrição
-    if (!descricao || descricao.trim() === '') {
-        errors.push('Descrição é obrigatória');
-    }
+    body('preco')
+        .isFloat({ gt: 0 }).withMessage('Preço deve ser um número positivo.'),
 
-    // Validar preço
-    if (preco === undefined || preco === null) {
-        errors.push('Preço é obrigatório');
-    } else if (isNaN(preco) || parseFloat(preco) <= 0) {
-        errors.push('Preço deve ser um número positivo');
-    }
+    body('data_atualizado')
+        .optional({ checkFalsy: true })
+        .isISO8601().withMessage('Data deve estar no formato ISO8601.')
+        .isAfter('2000-01-01T00:00:00.000Z').withMessage('A data deve ser posterior a 01/01/2000.')
+        .isBefore('2025-06-20T00:00:00.000Z').withMessage('A data deve ser anterior a 20/06/2025.'),
 
-    // Retornar erros, se houver
-    if (errors.length > 0) {
-        return res.status(400).json({ errors });
-    }
-
-    // Converter preço para float
-    req.body.preco = parseFloat(preco);
-
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
     next();
-};
+    },
+];
 
 /**
  * Validar ID do produto
@@ -48,17 +47,16 @@ const validateProduto = (req, res, next) => {
  * @param {Function} next - Função middleware next do Express
  * @return {void}
  */
-const validateProdutoId = (req, res, next) => {
-    const id = req.params.id;
-
-    if (!id || isNaN(id) || parseInt(id) <= 0) {
-        return res.status(400).json({
-            message: 'ID inválido. Deve ser um número positivo',
-        });
+const validateProdutoId = [
+    param('id').isInt({ min: 1 }).withMessage('ID do produto deve ser um inteiro positivo.'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
     }
-
     next();
-};
+    },
+];
 
 module.exports = {
     validateProduto,

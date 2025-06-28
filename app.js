@@ -11,8 +11,10 @@ const methodOverride = require('method-override');
 
 // Importar rotas
 const indexRouter = require('./routes/index');
-const clienteRoutes = require('./routes/clienteRoutes');
-const produtoRoutes = require('./routes/produtoRoutes');
+const clienteRouter = require('./routes/clienteRoutes');
+const produtoRouter = require('./routes/produtoRoutes');
+const usuarioRouter = require('./routes/usuarioRoutes');
+const authRouter = require('./routes/authRoutes');
 
 // Criar aplicação Express
 const app = express();
@@ -33,8 +35,10 @@ app.use(methodOverride('_method'));
 
 // Rotas
 app.use('/', indexRouter);
-app.use('/clientes', clienteRoutes);
-app.use('/produtos', produtoRoutes);
+app.use('/clientes', clienteRouter);
+app.use('/produtos', produtoRouter);
+app.use('/usuarios', usuarioRouter);
+app.use('/auth', authRouter);
 
 // Capturar erro 404 e encaminhar para o manipulador de erros
 app.use((req, res, next) => {
@@ -60,10 +64,10 @@ app.use((err, req, res, next) => {
     }
 });
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+// Iniciar o servidor
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
 
-module.exports = app;
+module.exports = { app, server };

@@ -2,6 +2,8 @@
  * Middleware de validação de cliente
  */
 
+const { body, param, validationResult } = require('express-validator');
+
 /**
  * Validar dados do cliente
  * @param {Object} req
@@ -9,47 +11,32 @@
  * @param {Function} next
  * @return {void}
  */
-const validateCliente = (req, res, next) => {
-    const { nome, sobrenome, email, idade } = req.body;
-    const errors = [];
+const validateCliente = [
+    body('nome')
+        .isString().withMessage('Nome deve ser um texto.')
+        .trim()
+        .isLength({ min: 3, max: 255 }).withMessage('Nome deve ter entre 3 e 255 caracteres.'),
 
-    // Validar nome
-    if (!nome || nome.trim() === '') {
-        errors.push('Nome é obrigatório');
-    }
+    body('sobrenome')
+        .isString().withMessage('Sobrenome deve ser um texto.')
+        .trim()
+        .isLength({ min: 3, max: 255 }).withMessage('Sobrenome deve ter entre 3 e 255 caracteres.'),
 
-    // Validar sobrenome
-    if (!sobrenome || sobrenome.trim() === '') {
-        errors.push('Sobrenome é obrigatório');
-    }
+    body('email')
+        .isEmail().withMessage('Formato de e-mail inválido.')
+        .normalizeEmail(),
 
-    // Validar email
-    if (!email || email.trim() === '') {
-        errors.push('Email é obrigatório');
-    } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            errors.push('Email inválido');
+    body('idade')
+        .isInt({ min: 1, max: 120 }).withMessage('Idade deve ser um número entre 1 e 120.'),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
-    }
-
-    // Validar idade
-    if (idade === undefined || idade === null) {
-        errors.push('Idade é obrigatória');
-    } else if (isNaN(idade) || idade < 0) {
-        errors.push('Idade deve ser um número positivo');
-    }
-
-    // Retornar erros, se houver
-    if (errors.length > 0) {
-        return res.status(400).json({ errors });
-    }
-
-    // Converter idade para inteiro
-    req.body.idade = parseInt(idade);
-
     next();
-};
+    },
+];
 
 /**
  * Validar ID do cliente
@@ -58,17 +45,16 @@ const validateCliente = (req, res, next) => {
  * @param {Function} next - Função middleware next do Express
  * @return {void}
  */
-const validateClienteId = (req, res, next) => {
-    const id = req.params.id;
-
-    if (!id || isNaN(id) || parseInt(id) <= 0) {
-        return res.status(400).json({
-            message: 'ID inválido. Deve ser um número positivo',
-        });
+const validateClienteId = [
+    param('id').isInt({ min: 1 }).withMessage('ID do cliente deve ser um inteiro positivo.'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
     }
-
     next();
-};
+    },
+];
 
 module.exports = {
     validateCliente,
